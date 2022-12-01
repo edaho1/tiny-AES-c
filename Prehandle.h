@@ -6,9 +6,9 @@
 
 #define STEPSIZE  100;
 
-char ** loadfile(char * filename, int * len);
-char* deblank(char* input);
-uint8_t * hex_decode(const char *in, size_t len,uint8_t *out);
+char ** loadfile(char * filename, int * len); //load two files results and CTR
+char* deblank(char* input); // clean blank spaces from file
+uint8_t * hex_decode(const char *in, size_t len,uint8_t *out); //combine two to char
 
 // table is taken from openssl implementation of AES
 static const uint8_t Te4[256] = 

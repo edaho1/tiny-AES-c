@@ -1,0 +1,8 @@
+Perform Sbox operations: Sbox[Data XOR Keybyte]
+Data is store in CTR_128_intermediateVal 
+CTR_128_intermediateval need to be clean before it can be process. We clean it by passing the values to the deblank and then to the hex_decoder. 
+Keybytes are generated on the fly as they are guesses that need to be made. The guesses should have range [0:255]
+
+Perform Hamming Weight operations:
+The hamming weight is a generic model used bitcount(uint8_t input)
+

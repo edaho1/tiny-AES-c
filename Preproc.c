@@ -33,6 +33,8 @@ int main(int argc, char * argv[])
     
     // removing spaces and rearranging values
     char * newCTR = deblank(CTR_128_intermediateval[0]);
+
+    // making char from bits
     uint8_t out[16];
     uint8_t* test =  hex_decode(newCTR, strlen(newCTR),out);
 
@@ -53,6 +55,10 @@ int main(int argc, char * argv[])
     // keybytes are guesses between 0:255. They should be XOR with each data byte.
 
     // There are 40k data in CTR_128_* that needs to be process you can do one line at a time before passing it in Sbox
+    // FOR I IN 0 TO 255 do
+    // {
+    //     /* code */
+    // } while (/* condition */);
     
     
 }
