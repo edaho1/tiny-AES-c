@@ -37,12 +37,15 @@ NOTE:   String length must be evenly divisible by 16byte (str_len % 16 == 0)
 /*****************************************************************************/
 #include <string.h> // CBC mode, for memset
 #include "aes.h"
-
+#include <stdio.h>
 /*****************************************************************************/
 /* Defines:                                                                  */
 /*****************************************************************************/
 // The number of columns comprising a state in AES. This is a constant in AES. Value=4
 #define Nb 4
+
+// #define KAT_FILE_OPEN_ERROR -1
+#define MAX_FILE_NAME 256
 
 #if defined(AES256) && (AES256 == 1)
     #define Nk 8
@@ -70,8 +73,6 @@ NOTE:   String length must be evenly divisible by 16byte (str_len % 16 == 0)
 /*****************************************************************************/
 // state - array holding the intermediate results during decryption.
 typedef uint8_t state_t[4][4];
-
-
 
 // The lookup-tables are marked const so they can be placed in read-only storage instead of RAM
 // The numbers below can be computed dynamically trading ROM for RAM - 
@@ -413,10 +414,25 @@ static void InvShiftRows(state_t* state)
 static void Cipher(state_t* state, const uint8_t* RoundKey)
 {
   uint8_t round = 0;
-
+  FILE *fp;
+  char fileName[MAX_FILE_NAME];
+  sprintf(fileName, "CTR_128_intermediateVal.txt");
+  if ((fp = fopen(fileName, "a")) == NULL) 
+  {
+    fprintf(stderr, "Couldn't open <%s> for write\n", fileName);
+    // return KAT_FILE_OPEN_ERROR;
+  }
   // Add the First round key to the state before starting the rounds.
   AddRoundKey(0, state, RoundKey);
-
+  for (int i = 0; i < 4; i++)
+  {
+    for (int j = 0; j < 4; j++)
+    {
+      fprintf(fp,"%02x ",*state[i][j]);
+    }
+  }
+  fprintf(fp,"\n");
+  
   // There will be Nr rounds.
   // The first Nr-1 rounds are identical.
   // These Nr rounds are executed in the loop below.
@@ -424,15 +440,60 @@ static void Cipher(state_t* state, const uint8_t* RoundKey)
   for (round = 1; ; ++round)
   {
     SubBytes(state);
+    for (int i = 0; i < 4; i++)
+    {
+      for (int j = 0; j < 4; j++)
+      {
+        fprintf(fp,"%02x ",*state[i][j]);
+      }
+    }
+    fprintf(fp,"\n");
+
     ShiftRows(state);
+    for (int i = 0; i < 4; i++)
+    {
+      for (int j = 0; j < 4; j++)
+      {
+        fprintf(fp,"%02x ",*state[i][j]);
+      }
+    }
+    fprintf(fp,"\n");
+
     if (round == Nr) {
       break;
     }
     MixColumns(state);
+    for (int i = 0; i < 4; i++)
+    {
+      for (int j = 0; j < 4; j++)
+      {
+        fprintf(fp,"%02x ",*state[i][j]);
+      }
+    }
+    fprintf(fp,"\n");
+
     AddRoundKey(round, state, RoundKey);
+    for (int i = 0; i < 4; i++)
+    {
+      for (int j = 0; j < 4; j++)
+      {
+        fprintf(fp,"%02x ",*state[i][j]);
+      }
+    }
+    fprintf(fp,"\n");  
   }
   // Add round key to last round
   AddRoundKey(Nr, state, RoundKey);
+  for (int i = 0; i < 4; i++)
+  {
+    for (int j = 0; j < 4; j++)
+    {
+      fprintf(fp,"%02x ",*state[i][j]);
+    }
+  }
+  fprintf(fp,"\n");
+
+  fclose(fp);
 }
 
 #if (defined(CBC) && CBC == 1) || (defined(ECB) && ECB == 1)
@@ -554,7 +615,7 @@ void AES_CTR_xcrypt_buffer(struct AES_ctx* ctx, uint8_t* buf, size_t length)
       {
 	/* inc will overflow */
         if (ctx->Iv[bi] == 255)
-	{
+	      {
           ctx->Iv[bi] = 0;
           continue;
         } 
@@ -565,7 +626,13 @@ void AES_CTR_xcrypt_buffer(struct AES_ctx* ctx, uint8_t* buf, size_t length)
     }
 
     buf[i] = (buf[i] ^ buffer[bi]);
+    
   }
+    for (int enc = 0; enc < 16; enc++)
+    {
+        printf("%02x ",buf[enc]);
+    }
+    printf("\n");
 }
 
 #endif // #if defined(CTR) && (CTR == 1)
