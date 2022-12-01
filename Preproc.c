@@ -42,11 +42,18 @@ int main(int argc, char * argv[])
     //     printf("%02x ",out[i]);
     // }
     // printf("\n");
+
+    // Testing SBox and Hamming weight model
     printf("%02x\n",Te4[0]);
     //static uint8_t count = bitcount(5);
     printf("%d\n",bitcount(255));
+
     // performing solution for entire data set
-    // TO-DO: add sbox and hamming weight for AES. compute all 15-bit exhaustive search and save to file.
+    // TO-DO: perform Sbox[Data ^ Keybyte]: data is store in CTR_128_intermediate. they should be pass in deblank then hex_decode before going into the sbox
+    // keybytes are guesses between 0:255. They should be XOR with each data byte.
+
+    // There are 40k data in CTR_128_* that needs to be process you can do one line at a time before passing it in Sbox
+    
     
 }
 
