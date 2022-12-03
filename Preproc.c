@@ -32,11 +32,11 @@ int main(int argc, char * argv[])
     // }   
     
     // removing spaces and rearranging values
-    char * newCTR = deblank(CTR_128_intermediateval[0]);
+    // char * newCTR = deblank(CTR_128_intermediateval[0]);
 
     // making char from bits
-    uint8_t out[16];
-    uint8_t* test =  hex_decode(newCTR, strlen(newCTR),out);
+    // uint8_t out[16];
+    // uint8_t* test =  hex_decode(newCTR, strlen(newCTR),out);
 
     // displaying first result to check if solution work
     // for (int i = 0; i < 16; i++)
@@ -46,20 +46,33 @@ int main(int argc, char * argv[])
     // printf("\n");
 
     // Testing SBox and Hamming weight model
-    printf("%02x\n",Te4[0]);
+    //printf("%02x\n",Te4[0]);
     //static uint8_t count = bitcount(5);
-    printf("%d\n",bitcount(255));
+    //printf("%d\n",bitcount(255));
 
     // performing solution for entire data set
     // TO-DO: perform Sbox[Data ^ Keybyte]: data is store in CTR_128_intermediate. they should be pass in deblank then hex_decode before going into the sbox
     // keybytes are guesses between 0:255. They should be XOR with each data byte.
 
     // There are 40k data in CTR_128_* that needs to be process you can do one line at a time before passing it in Sbox
-    // FOR I IN 0 TO 255 do
-    // {
-    //     /* code */
-    // } while (/* condition */);
     
-    
+    uint8_t hypos[length][16];
+    for (int s = 0; s < length; s++)
+    {
+        uint8_t out[16] = {};
+        char * newCTR = deblank(CTR_128_intermediateval[s]);
+        uint8_t* Vals =  hex_decode(newCTR, strlen(newCTR),out);
+        // for (int i = 0; i < 16; i++)
+        // {
+        //     printf("%02x ",out[i]);
+        // }       
+        for(int t = 0; t < 16; t++)
+        {
+            hypos[s][t] = bitcount(Te4[(uint8_t) Vals[t]]);
+            printf("%02x ",hypos[s][t]);
+        }
+        printf("\n");
+    }
+
 }
 

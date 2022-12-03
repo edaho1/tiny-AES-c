@@ -6,7 +6,8 @@
 
 #define STEPSIZE  100;
 
-char ** loadfile(char * filename, int * len); //load two files results and CTR
+char ** loadfile(char * filename, int * len); // load two files results and CTR
+double ** loadhypos(char * filename, int * len); // load hypothetical back
 char* deblank(char* input); // clean blank spaces from file
 uint8_t * hex_decode(const char *in, size_t len,uint8_t *out); //combine two to char
 
